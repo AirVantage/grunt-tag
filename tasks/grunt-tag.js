@@ -35,7 +35,7 @@ module.exports = function(grunt) {
         }
 
         function tag() {
-            return run('git tag -f ' + tagName + ' -m "' + tagMsg + '"', 'Create or move the git tag: ' + tagName);
+            return run('git tag -f ' + tagName + ' -m "' + tagMsg + '"', 'Create or move the git tag: ' + tagName + ' (' + tagMsg + ')');
         }
 
         function push() {
@@ -54,19 +54,30 @@ module.exports = function(grunt) {
         var version = options.file && grunt.file.readJSON(options.file).version;
 
         // Build tag
-        var tagFormat = grunt.config.getRaw(this.name + '.options.tagName') || '<%= version %>';
-        var tagMsgFormat = grunt.config.getRaw(this.name + '.options.tagMessage') || 'Version <%= version %>';
-
         var templateOptions = {
             data: {
                 version: version
             }
         };
-        var tagName = grunt.template.process(tagFormat, templateOptions);
-        var tagMsg = grunt.template.process(tagMsgFormat, templateOptions);
+
+        var tagFormat = grunt.option('tagName');
+        if (!tagFormat) {
+            tagFormat = grunt.config.getRaw(this.name + '.options.tagName') || '<%= version %>';
+        }
+        var tagName = grunt.template.process(tagFormat.toString(), templateOptions);
+
+        var tagMsgFormat = grunt.option('tagMsg');
+        if (!tagMsgFormat) {
+            tagMsgFormat = grunt.config.getRaw(this.name + '.options.tagMessage') || 'Version ' + tagName;
+        }
+        var tagMsg = grunt.template.process(tagMsgFormat.toString(), templateOptions);
 
         var nowrite = grunt.option('no-write');
         var done = this.async();
+
+        if (nowrite) {
+            grunt.log.ok('Tag dry run.');
+        }
 
         BPromise.resolve()
             .then(ifEnabled('tag', tag))
