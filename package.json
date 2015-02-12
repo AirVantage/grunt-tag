@@ -1,0 +1,20 @@
+{
+    "name": "grunt-tag",
+    "version": "0.1.0",
+    "description": "Grunt task that create or move a git tag built from the version of package.json",
+    "keywords": [
+        "grunt",
+        "git",
+        "tag"
+    ],
+    "author": "Sierra Wireless",
+    "license": "MIT",
+    "dependencies": {
+        "bluebird": "^2.3.11",
+        "shelljs": "^0.3.0"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-contrib-jshint": "^0.9.2"
+    }
+}
